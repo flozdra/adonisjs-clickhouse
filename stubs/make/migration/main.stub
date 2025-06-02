@@ -1,0 +1,14 @@
+{{{
+  exports({ to: app.makePath(folder, path, fileName) })
+}}}
+import { BaseSchema } from 'adonisjs-clickhouse/schema'
+
+export default class implements BaseSchema {
+  up() {
+    await this.client.command({ query: '' })
+  }
+
+  down() {
+    await this.client.command({ query: '' })
+  }
+}

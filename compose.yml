@@ -1,0 +1,14 @@
+services:
+  clickhouse:
+    image: clickhouse:latest
+    ports:
+      - 8123:8123
+    environment:
+      - CLICKHOUSE_PORT=8123
+      - CLICKHOUSE_USER=adonisjs
+      - CLICKHOUSE_PASSWORD=password
+      - CLICKHOUSE_DB=package
+    ulimits:
+      nofile:
+        soft: 262144
+        hard: 262144

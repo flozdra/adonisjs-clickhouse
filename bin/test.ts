@@ -1,11 +1,15 @@
 import { assert } from '@japa/assert'
+import { fileSystem } from '@japa/file-system'
 import { configure, processCLIArgs, run } from '@japa/runner'
 
 processCLIArgs(process.argv.splice(2))
 
 configure({
   files: ['tests/**/*.spec.ts'],
-  plugins: [assert()],
+  plugins: [
+    assert(),
+    fileSystem({ basePath: new URL('../test-helpers/fs-plugin/', import.meta.url) }),
+  ],
 })
 
 run()

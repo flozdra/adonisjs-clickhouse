@@ -1,0 +1,12 @@
+{{#var seederFileName = generators.seederFileName(name)}}
+{{{
+  exports({ to: app.makePath(folder, path, seederFileName) })
+}}}
+import { BaseSeeder } from 'adonisjs-clickhouse/seeders'
+
+export default class extends BaseSeeder {
+  async run() {
+    // Write your queries inside the run method
+    await this.client.insert({})
+  }
+}

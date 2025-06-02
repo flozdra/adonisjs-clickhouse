@@ -1,17 +1,68 @@
-/*
-|--------------------------------------------------------------------------
-| Configure hook
-|--------------------------------------------------------------------------
-|
-| The configure hook is called when someone runs "node ace configure <package>"
-| command. You are free to perform any operations inside this function to
-| configure the package.
-|
-| To make things easier, you have access to the underlying "ConfigureCommand"
-| instance and you can use codemods to modify the source files.
-|
-*/
+import type Configure from '@adonisjs/core/commands/configure'
+import { stubsRoot } from './stubs/main.js'
 
-import ConfigureCommand from '@adonisjs/core/commands/configure'
+/**
+ * Configures the package
+ */
+export async function configure(command: Configure) {
+  let shouldInstallPackages: boolean | undefined = command.parsedFlags.install
 
-export async function configure(_command: ConfigureCommand) {}
+  /**
+   * Prompt when `install` or `--no-install` flags are
+   * not used
+   */
+  if (shouldInstallPackages === undefined) {
+    shouldInstallPackages = await command.prompt.confirm(
+      'Do you want to install additional packages required by "adonisjs-clickhouse"?'
+    )
+  }
+  const codemods = await command.createCodemods()
+
+  /**
+   * Publish config file
+   */
+  await codemods.makeUsingStub(stubsRoot, `config/clickhouse.stub`, {})
+
+  /**
+   * Register commands and provider to the rcfile
+   */
+  await codemods.updateRcFile((rcFile) => {
+    rcFile.addCommand('adonisjs-clickhouse/commands')
+    rcFile.addProvider('adonisjs-clickhouse/clickhouse_provider')
+  })
+
+  /**
+   * Define env variables
+   */
+  await codemods.defineEnvVariables({
+    CLICKHOUSE_HOST: 'http://localhost:8123',
+    CLICKHOUSE_USER: 'default',
+    CLICKHOUSE_PASSWORD: 'password',
+    CLICKHOUSE_DB: 'default',
+  })
+
+  /**
+   * Define env variables validations
+   */
+  await codemods.defineEnvValidations({
+    leadingComment: 'Variables for configuring ClickHouse connection',
+    variables: {
+      CLICKHOUSE_HOST: `Env.schema.string({ format: 'url', tld: false })`,
+      CLICKHOUSE_USER: 'Env.schema.string()',
+      CLICKHOUSE_PASSWORD: 'Env.schema.string.optional()',
+      CLICKHOUSE_DB: 'Env.schema.string()',
+    },
+  })
+
+  /**
+   * Install packages or share instructions to install them
+   */
+  const packagesToInstall: { name: string; isDevDependency: boolean }[] = [
+    { name: '@clickhouse/client', isDevDependency: false },
+  ]
+  if (shouldInstallPackages) {
+    await codemods.installPackages(packagesToInstall)
+  } else {
+    await codemods.listPackagesToInstall(packagesToInstall)
+  }
+}

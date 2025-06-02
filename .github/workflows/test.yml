@@ -1,4 +1,4 @@
-name: test
+name: Run tests
 
 on:
   - push
@@ -24,32 +24,24 @@ jobs:
         run: npm run typecheck
 
   tests:
-    runs-on: ${{ matrix.os }}
+    runs-on: ubuntu-latest
     strategy:
       matrix:
-        os: [ubuntu-latest, windows-latest]
         node-version:
           - 20.10.0
           - 21.x
+    services:
+      postgres:
+        image: clickhouse:latest
+        env:
+          CLICKHOUSE_PORT: 8123
+          CLICKHOUSE_USER: adonisjs
+          CLICKHOUSE_PASSWORD: password
+          CLICKHOUSE_DB: package
+        ports:
+          - 8123:8123
     steps:
       - uses: actions/checkout@v4
-      - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
-        with:
-          node-version: ${{ matrix.node-version }}
-      - name: Install
-        run: npm install
-      - name: Run tests
-        run: npm test
-  windows:
-    runs-on: windows-latest
-    strategy:
-      matrix:
-        node-version:
-          - 20.10.0
-          - 21.x
-    steps:
-      - uses: actions/checkout@v2
       - name: Use Node.js ${{ matrix.node-version }}
         uses: actions/setup-node@v1
         with:
