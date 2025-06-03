@@ -46,7 +46,7 @@ const clickhouseConfig = defineConfig({
        * ClickHouse JS client configuration
        */
       application: 'AdonisJS',
-      host: env.get('CLICKHOUSE_HOST'),
+      url: env.get('CLICKHOUSE_URL'),
       username: env.get('CLICKHOUSE_USER'),
       password: env.get('CLICKHOUSE_PASSWORD', ''),
       database: env.get('CLICKHOUSE_DB'),

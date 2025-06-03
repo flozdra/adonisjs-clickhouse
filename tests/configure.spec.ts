@@ -50,14 +50,14 @@ test.group('Configure', (group) => {
     await assert.fileContains('adonisrc.ts', 'adonisjs-clickhouse/clickhouse_provider')
     await assert.fileContains('config/clickhouse.ts', 'defineConfig({')
 
-    await assert.fileContains('.env', 'CLICKHOUSE_HOST')
+    await assert.fileContains('.env', 'CLICKHOUSE_URL')
     await assert.fileContains('.env', 'CLICKHOUSE_USER')
     await assert.fileContains('.env', 'CLICKHOUSE_PASSWORD')
     await assert.fileContains('.env', 'CLICKHOUSE_DB')
 
     await assert.fileContains(
       'start/env.ts',
-      `CLICKHOUSE_HOST: Env.schema.string({ format: 'url', tld: false })`
+      `CLICKHOUSE_URL: Env.schema.string({ format: 'url', tld: false })`
     )
     await assert.fileContains('start/env.ts', 'CLICKHOUSE_USER: Env.schema.string()')
     await assert.fileContains('start/env.ts', 'CLICKHOUSE_PASSWORD: Env.schema.string.optional()')

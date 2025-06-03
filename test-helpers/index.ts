@@ -19,7 +19,7 @@ export const createEmitter = () => new Emitter<any>(app)
 export function getConnectionConfig(): ConnectionConfig {
   return {
     application: 'AdonisJS',
-    url: process.env.CLICKHOUSE_HOST,
+    url: process.env.CLICKHOUSE_URL,
     database: process.env.CLICKHOUSE_DB,
     username: process.env.CLICKHOUSE_USER,
     password: process.env.CLICKHOUSE_PASSWORD,

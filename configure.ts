@@ -35,7 +35,7 @@ export async function configure(command: Configure) {
    * Define env variables
    */
   await codemods.defineEnvVariables({
-    CLICKHOUSE_HOST: 'http://localhost:8123',
+    CLICKHOUSE_URL: 'http://localhost:8123',
     CLICKHOUSE_USER: 'default',
     CLICKHOUSE_PASSWORD: 'password',
     CLICKHOUSE_DB: 'default',
@@ -47,7 +47,7 @@ export async function configure(command: Configure) {
   await codemods.defineEnvValidations({
     leadingComment: 'Variables for configuring ClickHouse connection',
     variables: {
-      CLICKHOUSE_HOST: `Env.schema.string({ format: 'url', tld: false })`,
+      CLICKHOUSE_URL: `Env.schema.string({ format: 'url', tld: false })`,
       CLICKHOUSE_USER: 'Env.schema.string()',
       CLICKHOUSE_PASSWORD: 'Env.schema.string.optional()',
       CLICKHOUSE_DB: 'Env.schema.string()',

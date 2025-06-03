@@ -13,10 +13,10 @@ const clickhouseConfig = defineConfig({
      */
     primary: {
       /**
-      * ClickHouse JS client configuration
-      */
+       * ClickHouse JS client configuration
+       */
       application: 'AdonisJS',
-      host: env.get('CLICKHOUSE_HOST'),
+      url: env.get('CLICKHOUSE_URL'),
       username: env.get('CLICKHOUSE_USER'),
       password: env.get('CLICKHOUSE_PASSWORD', ''),
       database: env.get('CLICKHOUSE_DB'),
@@ -25,25 +25,25 @@ const clickhouseConfig = defineConfig({
       request_timeout: 30e3,
 
       /**
-      * Debug mode for the connection
-      */
+       * Debug mode for the connection
+       */
       debug: false,
 
       /**
-      * Migrations configuration
-      */
+       * Migrations configuration
+       */
       migrations: {
         paths: ['clickhouse/migrations'],
         disableRollbacksInProduction: true,
-        naturalSort: true
+        naturalSort: true,
       },
 
       /**
-      * Seeders configuration
-      */
+       * Seeders configuration
+       */
       seeders: {
         paths: ['clickhouse/seeders'],
-      }
+      },
     },
   },
 })
