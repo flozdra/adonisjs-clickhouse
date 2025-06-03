@@ -3,12 +3,12 @@
 }}}
 import { BaseSchema } from 'adonisjs-clickhouse/schema'
 
-export default class implements BaseSchema {
-  up() {
+export default class extends BaseSchema {
+  async up() {
     await this.client.command({ query: '' })
   }
 
-  down() {
+  async down() {
     await this.client.command({ query: '' })
   }
 }

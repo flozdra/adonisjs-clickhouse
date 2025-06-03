@@ -35,7 +35,7 @@ test.group('MakeMigration', (group) => {
 
     command.assertLogMatches(/clickhouse\/migrations\/\d+_create_events_table/)
     await assert.fileContains(filename, `import { BaseSchema } from 'adonisjs-clickhouse/schema'`)
-    await assert.fileContains(filename, `export default class implements BaseSchema {`)
+    await assert.fileContains(filename, `export default class extends BaseSchema {`)
   })
 
   test('create migration file inside a sub-folder', async ({ fs, assert }) => {
@@ -51,7 +51,7 @@ test.group('MakeMigration', (group) => {
 
     command.assertLogMatches(/clickhouse\/migrations\/users\/\d+_create_events_table/)
     await assert.fileContains(filename, `import { BaseSchema } from 'adonisjs-clickhouse/schema'`)
-    await assert.fileContains(filename, `export default class implements BaseSchema {`)
+    await assert.fileContains(filename, `export default class extends BaseSchema {`)
   })
 
   test('print error when using an invalid db connection', async ({ fs }) => {
