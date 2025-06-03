@@ -37,6 +37,12 @@ test.group('Migrator', (group) => {
 
     const hasSchemaTable = await tableExists(clickhouse, 'adonis_schema')
     assert.isTrue(hasSchemaTable)
+
+    const [version] = await clickhouse
+      .query({ query: 'SELECT * FROM adonis_schema_versions;' })
+      .toJSONEachRow<{ version: number }>()
+    assert.deepEqual(version, { version: 1 })
+
     assert.deepEqual(migrator.migratedFiles, {})
     assert.equal(migrator.status, 'skipped')
   })

@@ -89,7 +89,7 @@ export class MigrationRunner extends EventEmitter {
    * existing migrations if we are plan to make a breaking
    * change.
    */
-  version: number = 2
+  version: number = 1
 
   constructor(
     private clickhouse: ClickHouse,
@@ -230,6 +230,33 @@ export class MigrationRunner extends EventEmitter {
       `,
     })
   }
+
+  /**
+   * Returns the latest migrations version. If no rows exist
+   * it inserts a new row for version 1
+   */
+  private async getLatestVersion() {
+    const rows = await this.client
+      .query({ query: `SELECT version FROM ${this.schemaVersionsTableName} LIMIT 1;` })
+      .toJSONEachRow<{ version: number }>()
+
+    if (rows.length) {
+      return Number(rows[0].version)
+    } else {
+      await this.client.insert({
+        table: this.schemaVersionsTableName,
+        values: [{ version: 1 }],
+        format: 'JSONEachRow',
+      })
+      return 1
+    }
+  }
+
+  /**
+   * Upgrade migrations version - For now it is a noop, but
+   * in future we can use it to upgrade existing migrations
+   */
+  private async upgradeVersion(_latestVersion: number): Promise<void> {}
 
   /**
    * Returns the latest batch from the migrations
@@ -443,7 +470,14 @@ export class MigrationRunner extends EventEmitter {
     try {
       await this.boot()
 
+      /**
+       * Upgrading migrations (if required)
+       */
       await this.makeMigrationsVersionsTable()
+      const latestVersion = await this.getLatestVersion()
+      if (latestVersion < this.version) {
+        await this.upgradeVersion(latestVersion)
+      }
 
       if (this.direction === 'up') {
         await this.runUp()
