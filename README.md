@@ -156,7 +156,7 @@ The configuration for migrations is defined in the `config/clickhouse.ts` file u
 You can create a new migration using the following command:
 
 ```bash
-node ace make:clickhouse-migration create_events_table
+node ace make:clickhouse:migration create_events_table
 ```
 
 Then, you can specify the `up` and `down` methods in the migration file located in the `clickhouse/migrations` directory. You can use the `command` method to create your table, but feel free to use any other methods exposed by the client.
@@ -228,7 +228,7 @@ The configuration for migrations is defined in the `config/clickhouse.ts` file u
 You can create a new seeder using the following command:
 
 ```bash
-node ace make:clickhouse-seeder events
+node ace make:clickhouse:seeder events
 ```
 
 Then, you can specify the `run` method in the seeder file located in the `clickhouse/seeders` directory. You can use the `insert` method to insert data into your table, but feel free to use any other methods exposed by the client.

@@ -4,7 +4,7 @@ import { args, BaseCommand, flags } from '@adonisjs/core/ace'
 import stringHelpers from '@adonisjs/core/helpers/string'
 
 export default class MakeMigration extends BaseCommand {
-  static commandName = 'make:clickhouse-migration'
+  static commandName = 'make:clickhouse:migration'
   static description = 'Make a new migration file'
   static options: CommandOptions = {
     startApp: true,
