@@ -3,7 +3,7 @@ import { stubsRoot } from '../stubs/main.js'
 import { CommandOptions } from '@adonisjs/core/types/ace'
 
 export default class MakeSeeder extends BaseCommand {
-  static commandName = 'clickhouse:make:seeder'
+  static commandName = 'make:clickhouse-seeder'
   static description = 'Make a new Seeder file'
 
   static options: CommandOptions = {
