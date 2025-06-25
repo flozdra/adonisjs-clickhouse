@@ -58,15 +58,7 @@ export default abstract class MigrationsBase extends BaseCommand {
    */
   private prettyPrintSql(file: MigratedFileNode, connectionName: string) {
     this.logger.log(this.colors.gray(`------------- ${file.file.name} -------------`))
-    // file.queries.map((sql) => {
-    //   prettyPrint({
-    //     connection: connectionName,
-    //     sql: sql,
-    //     ddl: true,
-    //     method: getDDLMethod(sql),
-    //     bindings: [],
-    //   })
-    // })
+    this.logger.log(file.queries)
     this.logger.log(`Connection: ${this.colors.cyan(connectionName)}`)
     this.logger.log(this.colors.gray('------------- END -------------'))
   }

@@ -114,8 +114,9 @@ export class MigrationRunner extends EventEmitter {
    * Writes the migrated file to the migrations table. This ensures that
    * we are not re-running the same migration again
    */
-  private async recordMigrated(name: string) {
+  private async recordMigrated(name: string, executionResponse: boolean | string) {
     if (this.dryRun) {
+      this.migratedFiles[name].queries = executionResponse as string
       return
     }
 
@@ -132,8 +133,9 @@ export class MigrationRunner extends EventEmitter {
    * Removes the migrated file from the migrations table. This allows re-running
    * the migration
    */
-  private async recordRollback(name: string) {
+  private async recordRollback(name: string, executionResponse: boolean | string) {
     if (this.dryRun) {
+      this.migratedFiles[name].queries = executionResponse as string
       return
     }
     await this.client.command({
@@ -165,11 +167,11 @@ export class MigrationRunner extends EventEmitter {
       this.emit('migration:start', this.migratedFiles[migration.name])
 
       if (this.direction === 'up') {
-        await schema.execUp() // Handles dry run itself
-        await this.recordMigrated(migration.name) // Handles dry run itself
+        const response = await schema.execUp() // Handles dry run itself
+        await this.recordMigrated(migration.name, response) // Handles dry run itself
       } else if (this.direction === 'down') {
-        await schema.execDown() // Handles dry run itself
-        await this.recordRollback(migration.name) // Handles dry run itself
+        const response = await schema.execDown() // Handles dry run itself
+        await this.recordRollback(migration.name, response) // Handles dry run itself
       }
 
       this.migratedFiles[migration.name].status = 'completed'
@@ -343,6 +345,7 @@ export class MigrationRunner extends EventEmitter {
       if (!existing.has(migration.name)) {
         this.migratedFiles[migration.name] = {
           status: 'pending',
+          queries: '',
           file: migration,
           batch: batch + 1,
         }
@@ -390,6 +393,7 @@ export class MigrationRunner extends EventEmitter {
 
       this.migratedFiles[migration.name] = {
         status: 'pending',
+        queries: '',
         file: migration,
         batch: file.batch,
       }

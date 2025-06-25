@@ -48,6 +48,7 @@ export type MigratorOptions =
 export type MigratedFileNode = {
   status: 'completed' | 'error' | 'pending'
   file: FileNode<unknown>
+  queries: string
   batch: number
 }
 

@@ -33,9 +33,10 @@ export class BaseSchema {
       throw new Exception('Cannot execute a given schema twice')
     }
 
+    this.state = 'completed'
+
     if (this.dryRun) {
-      this.state = 'completed'
-      return true
+      return this.up.toString()
     }
 
     await this.up()
@@ -51,12 +52,14 @@ export class BaseSchema {
       throw new Exception('Cannot execute a given schema twice')
     }
 
+    this.state = 'completed'
+
     if (this.dryRun) {
-      this.state = 'completed'
-      return true
+      return this.down.toString()
     }
 
     await this.down()
+    this.state = 'completed'
     return true
   }
 
