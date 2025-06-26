@@ -1,12 +1,3 @@
-/*
- * @adonisjs/lucid
- *
- * (c) AdonisJS
- *
- * For the full copyright and license information, please view the LICENSE
- * file that was distributed with this source code.
- */
-
 import { test } from '@japa/runner'
 import { ListLoader } from '@adonisjs/core/ace'
 import { AceFactory } from '@adonisjs/core/factories'
@@ -21,18 +12,8 @@ import { ApplicationService } from '@adonisjs/core/types'
 import { ClickHouseTestUtils } from '../src/test_utils/index.js'
 
 test.group('ClickHouse Test Utils', () => {
-  test('truncate() should run clickhouse:migration:run and clickhouse:db:truncate commands', async ({
-    fs,
-    assert,
-  }) => {
-    let migrationRun = false
+  test('truncate() should run clickhouse:db:truncate command', async ({ fs, assert }) => {
     let truncateRun = false
-
-    class FakeMigrate extends Migrate {
-      override async run() {
-        migrationRun = true
-      }
-    }
 
     class FakeDbTruncate extends DbTruncate {
       override async run() {
@@ -41,7 +22,7 @@ test.group('ClickHouse Test Utils', () => {
     }
 
     const ace = await new AceFactory().make(fs.baseUrl, { importer: () => {} })
-    ace.addLoader(new ListLoader([FakeMigrate, FakeDbTruncate]))
+    ace.addLoader(new ListLoader([FakeDbTruncate]))
 
     const app = new AppFactory().create(fs.baseUrl, () => {}) as ApplicationService
     await app.init()
@@ -54,18 +35,11 @@ test.group('ClickHouse Test Utils', () => {
 
     await truncate()
 
-    assert.isTrue(migrationRun)
     assert.isTrue(truncateRun)
   })
 
   test('truncate() with custom connectionName', async ({ fs, assert }) => {
-    assert.plan(2)
-
-    class FakeMigrate extends Migrate {
-      override async run() {
-        assert.equal(this.connection, 'secondary')
-      }
-    }
+    assert.plan(1)
 
     class FakeDbTruncate extends DbTruncate {
       override async run() {
@@ -74,7 +48,7 @@ test.group('ClickHouse Test Utils', () => {
     }
 
     const ace = await new AceFactory().make(fs.baseUrl, { importer: () => {} })
-    ace.addLoader(new ListLoader([FakeMigrate, FakeDbTruncate]))
+    ace.addLoader(new ListLoader([FakeDbTruncate]))
 
     const app = new AppFactory().create(fs.baseUrl, () => {}) as ApplicationService
     await app.init()

@@ -276,9 +276,9 @@ This package also provides a test utility class in the same way the `@adonisjs/l
 A `clickhouse` macro is registered on the `testUtils` instance, which allows you to interact with the database before and after your tests.
 The macro provides the following methods:
 
-- `migrate`: Run the migrations before the tests, and roll them back after the tests.
-- `truncate`: Truncate all the tables before the tests.
-- `seed`: Run the seeders before the tests.
+- `migrate`: Run the migrations and returns a function to roll them back.
+- `truncate`: Returns a function to truncate all the tables.
+- `seed`: Run the seeders.
 
 For example, you can migrate the ClickHouse database before each run cycle by adding the following hook to your `tests/bootstrap.ts` file:
 
@@ -291,7 +291,7 @@ export const runnerHooks: Required<Pick<Config, 'setup' | 'teardown'>> = {
 }
 ```
 
-You can also use the `clickhouse` macro in your tests file. For example, you can truncate all the tables before each test:
+You can also use the `clickhouse` macro in your tests file. For example, you can truncate all the tables after each test:
 
 ```typescript
 import { test } from '@japa/runner'

@@ -30,11 +30,9 @@ export class ClickHouseTestUtils {
   }
 
   /**
-   * Testing hook for running migrations ( if needed )
-   * Return a function to truncate the whole database but keep the schema
+   * Returns a function to truncate all tables in the database.
    */
   async truncate() {
-    await this.#runCommand('clickhouse:migration:run', ['--compact-output'])
     return () => this.#runCommand('clickhouse:db:truncate')
   }
 
