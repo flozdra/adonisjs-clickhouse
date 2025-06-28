@@ -72,7 +72,7 @@ test.group('MakeMigration', (group) => {
   })
 
   test('pick directory from migration sources').run(async ({ fs }) => {
-    const clickhouse = getClickHouse(undefined, {
+    const clickhouse = getClickHouse({
       connection: 'primary',
       connections: {
         primary: Object.assign(getConnectionConfig(), {

@@ -79,7 +79,7 @@ test.group('DbSeed', (group) => {
     assert.equal(process.env.EXEC_SEEDER_1, 'true')
     assert.isUndefined(process.env.EXEC_SEEDER_2)
     delete process.env.EXEC_SEEDER_1
-  }).disableTimeout()
+  })
 
   test('run seeders with compact output', async ({ fs }) => {
     await createSeederFile(fs, `export default class { run() { const a = 1 } }`)

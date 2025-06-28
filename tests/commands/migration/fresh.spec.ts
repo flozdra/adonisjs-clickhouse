@@ -15,7 +15,7 @@ import {
   tableExists,
 } from '../../../test-helpers/index.js'
 
-test.group('ch:migrate:fresh', (group) => {
+test.group('clickhouse:migrate:fresh', (group) => {
   group.each.setup(async () => {
     return async () => {
       await cleanup(['adonis_schema', 'adonis_schema_versions', 'events'])

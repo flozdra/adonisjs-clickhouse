@@ -49,6 +49,9 @@ export default class DbTruncate extends BaseCommand {
    */
   private async performTruncate(client: MethodClientContract) {
     const database = client.connection.config.database || 'default'
+    const clusterClause = client.connection.config.clusterName
+      ? ` ON CLUSTER ${client.connection.config.clusterName}`
+      : ''
 
     let tables = await client
       .query({
@@ -60,7 +63,9 @@ export default class DbTruncate extends BaseCommand {
     tables = tables.filter((t) => !['adonis_schema', 'adonis_schema_versions'].includes(t.name))
 
     await Promise.all(
-      tables.map((table) => client.command({ query: `TRUNCATE TABLE ${table.name};` }))
+      tables.map((table) =>
+        client.command({ query: `TRUNCATE TABLE ${table.name} ${clusterClause};` })
+      )
     )
     this.logger.success('Truncated tables successfully')
   }

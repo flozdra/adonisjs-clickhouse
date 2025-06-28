@@ -3,10 +3,6 @@
 This package provides a ClickHouse database wrapper for AdonisJS applications.
 This includes a ClickHouse client, with supports for migrations, seeders, and test utilities.
 
-> ⚠️ **Caution** : This package does not support `CLUSTER` mode for the **migrations** since the `adonis_schema` table is created with the `MergeTree` engine (not `ReplicatedMergeTree`).
->
-> You can however use this package to query a ClickHouse cluster by specifying the `ON CLUSTER` clause in your queries.
-
 ## Installation
 
 Install the package using npm:
@@ -55,6 +51,11 @@ const clickhouseConfig = defineConfig({
       request_timeout: 30e3,
 
       /**
+       * Cluster name for the package commands when using a ClickHouse cluster.
+       */
+      clusterName: env.get('CLICKHOUSE_CLUSTER_NAME'),
+
+      /**
        * Debug mode for the connection
        */
       debug: false,
@@ -66,6 +67,14 @@ const clickhouseConfig = defineConfig({
         paths: ['clickhouse/migrations'],
         disableRollbacksInProduction: true,
         naturalSort: true,
+
+        /**
+         * ReplicatedMergeTree options for the migration tables when using a ClickHouse cluster.
+         */
+        replicatedMergeTree: {
+          zooKeeperPath: '/clickhouse/tables/{shard}/{database}/{table}',
+          replicaName: '{replica}',
+        },
       },
 
       /**
@@ -122,8 +131,6 @@ const rows = await clickhouse
 You can use this package to migrate your ClickHouse database schema. The API is similar to the [`@adonisjs/lucid` migration tool](https://lucid.adonisjs.com/docs/migrations).
 
 > ⚠️ **Caution**: The migrations are not runned under a transaction since this is an experimental feature in ClickHouse.
->
-> Moreover, this package does not support `CLUSTER` mode for the migrations: the `adonis_schema` table is created with the `MergeTree` engine (not `ReplicatedMergeTree`).
 
 The configuration for migrations is defined in the `config/clickhouse.ts` file under the `migrations` property of the connection:
 
@@ -135,23 +142,117 @@ The configuration for migrations is defined in the `config/clickhouse.ts` file u
      * @default ['clickhouse/migrations']
      */
     paths?: string[]
+
     /**
      * Name of the table to store the migrations
      * @default 'adonis_schema'
      */
     tableName?: string
+
     /**
      * Prevent rollbacks in production
      * @default false
      */
     disableRollbacksInProduction?: boolean
+
     /**
      * Use natural sort for migration files
      */
     naturalSort?: boolean
+
+    /**
+     * ReplicatedMergeTree options for the migration tables.
+     */
+    replicatedMergeTree?: { zooKeeperPath: string; replicaName: string } | true
   }
 }
 ```
+
+### Note on running migrations in a ClickHouse cluster
+
+If you are using a ClickHouse cluster (with multiple replicas and/or shards), you can use the `clusterName` and `replicatedMergeTree` options so that the migration tables (`adonis_schema` and `adonis_schema_versions`) are using the `ReplicatedMergeTree` engine. This is useful to ensure that the migration tables are replicated and synchronized across all nodes in the cluster.
+
+> ⚠️ **Caution**: The migrations will only be executed on the node where the command is run.
+> If you want to make a migration to create a table across all your replicas, you must include the `ON CLUSTER` clause and the `ReplicatedMergeTree` engine in your command (see the examples in the [Migration usage](#migration-usage) section below).
+>
+> Please read the [official documentation](https://clickhouse.com/docs/engines/table-engines/mergetree-family/replication) for more information about the Data replication in ClickHouse.
+
+#### ClickHouse Cloud
+
+If you are using ClickHouse Cloud, the replication is managed for you, so you don't need to specify the `ReplicatedMergeTree` engine parameters.
+
+In that case, you can simply set the `clusterName` and the `migrations.replicatedMergeTree` options to `true` in the configuration file:
+
+```typescript
+{
+  clusterName: 'cluster_1S_2R',
+  migrations: {
+    replicatedMergeTree: true,
+  },
+}
+```
+
+The migration tables will be created as follow:
+
+```sql
+CREATE TABLE <adonis_schema_tables> ON CLUSTER cluster_1S_2R (
+  ...
+) ENGINE = ReplicatedMergeTree
+```
+
+#### Self-hosted ClickHouse cluster
+
+In the case you have a self-hosted ClickHouse cluster, you have two options:
+
+- set the `clusterName` option and the `migrations.replicatedMergeTree` option to an object with the `zooKeeperPath` and `replicaName` properties
+
+```typescript
+{
+  clusterName: 'cluster_1S_2R',
+  migrations: {
+    replicatedMergeTree: {
+      zooKeeperPath: '/clickhouse/tables/{shard}/{database}/{table}',
+      replicaName: '{replica}',
+    },
+  },
+}
+```
+
+The migration tables will be created as follow:
+
+```sql
+CREATE TABLE <adonis_schema_tables> ON CLUSTER cluster_1S_2R (
+  ...
+) ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/{database}/{table}', '{replica}')
+```
+
+- or set the `clusterName` option and the `migrations.replicatedMergeTree` option to `true` to use the default values from the ClickHouse server configuration (`<default_replica_path>` and `<default_replica_name>`).
+
+```typescript
+{
+  clusterName: 'cluster_1S_2R',
+  migrations: {
+    replicatedMergeTree: true
+  }
+}
+```
+
+The migration tables will be created as follow:
+
+```sql
+CREATE TABLE <adonis_schema_tables> ON CLUSTER cluster_1S_2R (
+  ...
+) ENGINE = ReplicatedMergeTree
+```
+
+The ClickHouse server will automatically use the `default_replica_path` and `default_replica_name` from the server configuration:
+
+```xml
+<default_replica_path>/clickhouse/tables/{shard}/{database}/{table}</default_replica_path>
+<default_replica_name>{replica}</default_replica_name>
+```
+
+### Migration usage
 
 You can create a new migration using the following command:
 
@@ -181,6 +282,28 @@ export default class extends BaseSchema {
 }
 ```
 
+If you are using a ClickHouse cluster, you mostly want include the `ON CLUSTER` clause and use a `Replicated` engine in your command to ensure that the table is replicated and synchronized across all nodes in the cluster:
+
+```typescript
+import { BaseSchema } from 'adonisjs-clickhouse/schema'
+
+export default class extends BaseSchema {
+  async up() {
+    await this.client.command({
+      query: `
+        CREATE TABLE events ON CLUSTER cluster_1S_2R
+        (name LowCardinality(String), time DateTime) 
+        ENGINE = ReplicatedMergeTree('/clickhouse/tables/{shard}/{database}/{table}', '{replica}')
+        ORDER BY (name, time);
+      `,
+    })
+  }
+  async down() {
+    await this.client.command({ query: 'DROP TABLE events ON CLUSTER cluster_1S_2R;' })
+  }
+}
+```
+
 Finally, you can run the migrations using the following command:
 
 ```bash
@@ -202,6 +325,24 @@ node ace clickhouse:migration:rollback --batch 1
 # Specify a connection
 node ace clickhouse:migration:run --connection secondary
 ```
+
+## Truncate and wipe commands
+
+The package also provides two commands to truncate or wipe the ClickHouse database:
+
+```bash
+node ace clickhouse:db:truncate
+```
+
+The truncate command will list all the tables using the `system.tables` table, and truncate them one by one, **except the migration tables**.
+
+```bash
+node ace clickhouse:db:wipe
+```
+
+The wipe command will drop all the tables in the database **including the migration tables**.
+
+> ⚠️ **If you are using a ClickHouse cluster, set the `clusterName` option in the configuration so that these commands will run the queries using the `ON CLUSTER` clause.**
 
 ## Seeders
 

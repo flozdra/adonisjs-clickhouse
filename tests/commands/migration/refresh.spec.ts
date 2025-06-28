@@ -53,7 +53,6 @@ test.group('clickhouse:migration:refresh', (group) => {
   test('run seeders when --seed flag is passed', async ({ fs, assert }) => {
     await createSeederFile(
       fs,
-
       `
         export default class {
           run() { process.env.EXEC_SEEDER = 'true' }

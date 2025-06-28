@@ -31,8 +31,9 @@ jobs:
           - 20.10.0
           - 21.x
     services:
-      postgres:
-        image: clickhouse:latest
+      # ClickHouse single server (exposed on 8123)
+      clickhouse-single:
+        image: clickhouse/clickhouse-server:latest
         env:
           CLICKHOUSE_PORT: 8123
           CLICKHOUSE_USER: adonisjs
@@ -40,12 +41,71 @@ jobs:
           CLICKHOUSE_DB: package
         ports:
           - 8123:8123
+        options: >-
+          --ulimit nofile=262144:262144
+
+      # ClickHouse cluster with 1 shard 2 replicas (exposed on 8124 and 8125)
+      clickhouse-01:
+        image: clickhouse/clickhouse-server:latest
+        env:
+          CLICKHOUSE_PORT: 8123
+          CLICKHOUSE_USER: adonisjs
+          CLICKHOUSE_PASSWORD: password
+          CLICKHOUSE_DB: package
+        ports:
+          - 8124:8123
+        options: --name clickhouse-01 --hostname clickhouse-01
+
+      clickhouse-02:
+        image: clickhouse/clickhouse-server:latest
+        env:
+          CLICKHOUSE_PORT: 8123
+          CLICKHOUSE_USER: adonisjs
+          CLICKHOUSE_PASSWORD: password
+          CLICKHOUSE_DB: package
+        ports:
+          - 8125:8123
+        options: --name clickhouse-02 --hostname clickhouse-02
+
+      # ClickHouse Keeper nodes
+      clickhouse-keeper-01:
+        image: clickhouse/clickhouse-keeper:latest-alpine
+        ports:
+          - 9181:9181
+        options: --name clickhouse-keeper-01 --hostname clickhouse-keeper-01
+
+      clickhouse-keeper-02:
+        image: clickhouse/clickhouse-keeper:latest-alpine
+        ports:
+          - 9182:9181
+        options: --name clickhouse-keeper-02 --hostname clickhouse-keeper-02
+
+      clickhouse-keeper-03:
+        image: clickhouse/clickhouse-keeper:latest-alpine
+        ports:
+          - 9183:9181
+        options: --name clickhouse-keeper-03 --hostname clickhouse-keeper-03
+
     steps:
       - uses: actions/checkout@v4
       - name: Use Node.js ${{ matrix.node-version }}
-        uses: actions/setup-node@v1
+        uses: actions/setup-node@v4
         with:
           node-version: ${{ matrix.node-version }}
+      - name: Copy config files to services
+        run: |
+          docker cp ${{ github.workspace }}/docker/clickhouse-01/etc/clickhouse-server/config.d/config.xml clickhouse-01:/etc/clickhouse-server/config.d/
+          docker cp ${{ github.workspace }}/docker/clickhouse-02/etc/clickhouse-server/config.d/config.xml clickhouse-02:/etc/clickhouse-server/config.d/
+          docker cp ${{ github.workspace }}/docker/clickhouse-keeper-01/etc/clickhouse-keeper/keeper_config.xml clickhouse-keeper-01:/etc/clickhouse-keeper/
+          docker cp ${{ github.workspace }}/docker/clickhouse-keeper-02/etc/clickhouse-keeper/keeper_config.xml clickhouse-keeper-02:/etc/clickhouse-keeper/
+          docker cp ${{ github.workspace }}/docker/clickhouse-keeper-03/etc/clickhouse-keeper/keeper_config.xml clickhouse-keeper-03:/etc/clickhouse-keeper/
+      - name: Restart services
+        run: |
+          docker restart clickhouse-01
+          docker restart clickhouse-02
+          docker restart clickhouse-keeper-01
+          docker restart clickhouse-keeper-02
+          docker restart clickhouse-keeper-03
       - name: Install
         run: npm install
       - name: Run tests

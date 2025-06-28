@@ -31,6 +31,7 @@
   },
   "scripts": {
     "clean": "del-cli build",
+    "compose": "docker compose -f compose.yml up",
     "copy:templates": "copyfiles \"stubs/**/*.stub\" build",
     "typecheck": "tsc --noEmit",
     "lint": "eslint .",

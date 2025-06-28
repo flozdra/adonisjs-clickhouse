@@ -49,6 +49,9 @@ export default class DbWipe extends BaseCommand {
    */
   private async performDropTables(client: MethodClientContract) {
     const database = client.connection.config.database || 'default'
+    const clusterClause = client.connection.config.clusterName
+      ? ` ON CLUSTER ${client.connection.config.clusterName}`
+      : ''
 
     const tables = await client
       .query({
@@ -57,7 +60,16 @@ export default class DbWipe extends BaseCommand {
       })
       .toJSONEachRow<{ name: string }>()
 
-    await Promise.all(tables.map((table) => client.command({ query: `DROP TABLE ${table.name};` })))
+    await Promise.all(
+      tables.map((table) =>
+        client.command({
+          query: `DROP TABLE ${table.name} ${clusterClause};`,
+          clickhouse_settings: {
+            database_atomic_wait_for_drop_and_detach_synchronously: 1, // Ensure that the drop is executed without delay
+          },
+        })
+      )
+    )
     this.logger.success('Dropped tables successfully')
   }
 

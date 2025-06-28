@@ -1,5 +1,6 @@
 services:
-  clickhouse:
+  # ClickHouse single server (exposed on 8123)
+  clickhouse-single:
     image: clickhouse:latest
     ports:
       - 8123:8123
@@ -12,3 +13,63 @@ services:
       nofile:
         soft: 262144
         hard: 262144
+
+  # ClickHouse cluster with 1 shard 2 replicas (exposed on 8124 and 8125)
+  clickhouse-01:
+    image: 'clickhouse/clickhouse-server:latest'
+    container_name: clickhouse-01
+    hostname: clickhouse-01
+    volumes:
+      - ${PWD}/docker/clickhouse-01/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+    ports:
+      - '127.0.0.1:8124:8123'
+    environment:
+      - CLICKHOUSE_PORT=8123
+      - CLICKHOUSE_USER=adonisjs
+      - CLICKHOUSE_PASSWORD=password
+      - CLICKHOUSE_DB=package
+    depends_on:
+      - clickhouse-keeper-01
+      - clickhouse-keeper-02
+      - clickhouse-keeper-03
+  clickhouse-02:
+    image: 'clickhouse/clickhouse-server:latest'
+    container_name: clickhouse-02
+    hostname: clickhouse-02
+    volumes:
+      - ${PWD}/docker/clickhouse-02/etc/clickhouse-server/config.d/config.xml:/etc/clickhouse-server/config.d/config.xml
+    ports:
+      - '127.0.0.1:8125:8123'
+    environment:
+      - CLICKHOUSE_PORT=8123
+      - CLICKHOUSE_USER=adonisjs
+      - CLICKHOUSE_PASSWORD=password
+      - CLICKHOUSE_DB=package
+    depends_on:
+      - clickhouse-keeper-01
+      - clickhouse-keeper-02
+      - clickhouse-keeper-03
+  clickhouse-keeper-01:
+    image: 'clickhouse/clickhouse-keeper:latest-alpine'
+    container_name: clickhouse-keeper-01
+    hostname: clickhouse-keeper-01
+    volumes:
+      - ${PWD}/docker/clickhouse-keeper-01/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
+    ports:
+      - '127.0.0.1:9181:9181'
+  clickhouse-keeper-02:
+    image: 'clickhouse/clickhouse-keeper:latest-alpine'
+    container_name: clickhouse-keeper-02
+    hostname: clickhouse-keeper-02
+    volumes:
+      - ${PWD}/docker/clickhouse-keeper-02/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
+    ports:
+      - '127.0.0.1:9182:9181'
+  clickhouse-keeper-03:
+    image: 'clickhouse/clickhouse-keeper:latest-alpine'
+    container_name: clickhouse-keeper-03
+    hostname: clickhouse-keeper-03
+    volumes:
+      - ${PWD}/docker/clickhouse-keeper-03/etc/clickhouse-keeper/keeper_config.xml:/etc/clickhouse-keeper/keeper_config.xml
+    ports:
+      - '127.0.0.1:9183:9181'

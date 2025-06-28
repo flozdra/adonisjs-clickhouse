@@ -126,6 +126,11 @@ export class MigrationRunner extends EventEmitter {
       values: [{ id: latestId + 1, name, batch: this.migratedFiles[name].batch }],
       columns: ['id', 'name', 'batch'],
       format: 'JSONEachRow',
+      clickhouse_settings: {
+        insert_quorum: 'auto',
+        insert_quorum_parallel: 0,
+        select_sequential_consistency: '1',
+      },
     })
   }
 
@@ -139,8 +144,11 @@ export class MigrationRunner extends EventEmitter {
       return
     }
     await this.client.command({
-      query: `ALTER TABLE ${this.schemaTableName} DELETE WHERE name = {name:String} SETTINGS mutations_sync = 2;`,
+      query: `ALTER TABLE ${this.schemaTableName} ${this.getClusterClause()} DELETE WHERE name = {name:String};`,
       query_params: { name },
+      clickhouse_settings: {
+        mutations_sync: '2',
+      },
     })
   }
 
@@ -185,6 +193,43 @@ export class MigrationRunner extends EventEmitter {
   }
 
   /**
+   * Returns the `ON CLUSER` clause.
+   *
+   * If `clusterName` is defined in the migrations config,
+   * then it returns the `ON CLUSTER <clusterName>` clause.
+   *
+   * Otherwise, it returns an empty string.
+   */
+  private getClusterClause() {
+    if (this.config.clusterName) {
+      return `ON CLUSTER ${this.config.clusterName}`
+    }
+    return ''
+  }
+
+  /**
+   * Returns the table engine to use for the migration tables
+   *
+   * If `replicatedMergeTree` is set to `true`, it returns the `ReplicatedMergeTree` engine
+   * without any parameters.
+   *
+   * If `replicatedMergeTree` is an object, it returns the `ReplicatedMergeTree` engine
+   * with the specified `zooKeeperPath` and `replicaName`.
+   *
+   * Otherwise, it returns the `MergeTree` engine.
+   */
+  private getTableEngine() {
+    if (this.migrationsConfig.replicatedMergeTree === true) {
+      return `ReplicatedMergeTree`
+    }
+    if (this.migrationsConfig.replicatedMergeTree) {
+      const { zooKeeperPath, replicaName } = this.migrationsConfig.replicatedMergeTree
+      return `ReplicatedMergeTree('${zooKeeperPath}', '${replicaName}')`
+    }
+    return `MergeTree`
+  }
+
+  /**
    * Makes the migrations table (if missing). Also created in dry run, since
    * we always reads from the schema table to find which migrations files to
    * execute and that cannot be done without missing table.
@@ -200,9 +245,9 @@ export class MigrationRunner extends EventEmitter {
     this.emit('create:schema:table')
     await this.client.command({
       query: `
-        CREATE TABLE ${this.schemaTableName}
+        CREATE TABLE ${this.schemaTableName} ${this.getClusterClause()}
         (id UInt32, name String, batch UInt32, migration_time DateTime DEFAULT now())
-        ENGINE = MergeTree()
+        ENGINE = ${this.getTableEngine()}
         ORDER BY (migration_time);
       `,
     })
@@ -225,9 +270,9 @@ export class MigrationRunner extends EventEmitter {
     this.emit('create:schema_versions:table')
     await this.client.command({
       query: `
-        CREATE TABLE ${this.schemaVersionsTableName}
+        CREATE TABLE ${this.schemaVersionsTableName} ${this.getClusterClause()}
         (version UInt32)
-        ENGINE = MergeTree()
+        ENGINE = ${this.getTableEngine()}
         ORDER BY (version);
       `,
     })
@@ -249,6 +294,11 @@ export class MigrationRunner extends EventEmitter {
         table: this.schemaVersionsTableName,
         values: [{ version: 1 }],
         format: 'JSONEachRow',
+        clickhouse_settings: {
+          insert_quorum: 'auto',
+          insert_quorum_parallel: 0,
+          select_sequential_consistency: '1',
+        },
       })
       return 1
     }
