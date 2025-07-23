@@ -1,7 +1,7 @@
 {
   "name": "adonisjs-clickhouse",
   "description": "A wrapper for ClickHouse database in AdonisJS with support for migrations, seeders, templates, and more.",
-  "version": "1.0.1-3",
+  "version": "1.0.1",
   "engines": {
     "node": ">=20.6.0"
   },
