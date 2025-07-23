@@ -54,6 +54,14 @@
   ],
   "author": "Florian Zdrada",
   "license": "MIT",
+  "repository": {
+    "type": "git",
+    "url": "git+https://github.com/flozdra/adonisjs-clickhouse.git"
+  },
+  "bugs": {
+    "url": "https://github.com/flozdra/adonisjs-clickhouse/issues"
+  },
+  "homepage": "https://github.com/flozdra/adonisjs-clickhouse#readme",
   "devDependencies": {
     "@adonisjs/assembler": "^7.8.2",
     "@adonisjs/core": "^6.12.0",

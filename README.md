@@ -1,5 +1,7 @@
 # ClickHouse wrapper for AdonisJS
 
+[![github-actions-image]][github-actions-url] [![npm-image]][npm-url] [![license-image]][license-url] [![typescript-image]][typescript-url]
+
 This package provides a ClickHouse database wrapper for AdonisJS applications.
 This includes a ClickHouse client, with supports for migrations, seeders, and test utilities.
 
@@ -446,3 +448,12 @@ test.group('Events', (group) => {
 ## License
 
 This project is licensed under the MIT License.
+
+[github-actions-image]: https://img.shields.io/github/actions/workflow/status/flozdra/adonisjs-clickhouse/test.yml
+[github-actions-url]: https://github.com/flozdra/adonisjs-clickhouse/actions/workflows/test.yml 'github-actions'
+[npm-image]: https://img.shields.io/npm/v/adonisjs-clickhouse.svg?logo=npm
+[npm-url]: https://npmjs.org/package/adonisjs-clickhouse 'npm'
+[license-image]: https://img.shields.io/npm/l/adonisjs-clickhouse?color=blueviolet
+[license-url]: LICENSE.md 'license'
+[typescript-image]: https://img.shields.io/badge/Typescript-294E80.svg?logo=typescript
+[typescript-url]: "typescript"
