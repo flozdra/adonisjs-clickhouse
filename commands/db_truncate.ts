@@ -50,17 +50,23 @@ export default class DbTruncate extends BaseCommand {
   private async performTruncate(client: MethodClientContract) {
     const database = client.connection.config.database || 'default'
     const clusterClause = client.connection.config.clusterName
-      ? ` ON CLUSTER ${client.connection.config.clusterName}`
+      ? ` ON CLUSTER ${client.connection.config.clusterName} SYNC`
       : ''
 
-    let tables = await client
+    const tables = await client
       .query({
-        query: 'SELECT name FROM system.tables WHERE database={database:String};',
-        query_params: { database },
+        query: `SELECT name
+                FROM system.tables
+                WHERE database={database:String}
+                  AND engine NOT IN ('View', 'File', 'URL', 'Buffer', 'Null', 'Dictionary')
+                  AND name NOT IN {schemaTables:Array(String)}
+                  ;`,
+        query_params: {
+          database,
+          schemaTables: ['adonis_schema', 'adonis_schema_versions'],
+        },
       })
       .toJSONEachRow<{ name: string }>()
-
-    tables = tables.filter((t) => !['adonis_schema', 'adonis_schema_versions'].includes(t.name))
 
     await Promise.all(
       tables.map((table) =>

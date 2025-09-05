@@ -50,7 +50,7 @@ export default class DbWipe extends BaseCommand {
   private async performDropTables(client: MethodClientContract) {
     const database = client.connection.config.database || 'default'
     const clusterClause = client.connection.config.clusterName
-      ? ` ON CLUSTER ${client.connection.config.clusterName}`
+      ? ` ON CLUSTER ${client.connection.config.clusterName} SYNC`
       : ''
 
     const tables = await client
