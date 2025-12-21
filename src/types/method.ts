@@ -79,8 +79,10 @@ export interface BaseMethodContract<Params, Result> extends Promise<Result> {
   execute(): Promise<Result>
 }
 
-export interface QueryContract<Format extends DataFormat>
-  extends BaseMethodContract<QueryParams<Format>, QueryResult<Format>> {
+export interface QueryContract<Format extends DataFormat> extends BaseMethodContract<
+  QueryParams<Format>,
+  QueryResult<Format>
+> {
   /**
    * Handy method to set the format to `JSONEachRow`, execute the query and return the result as JSON
    */
