@@ -1,7 +1,7 @@
 services:
   # ClickHouse single server (exposed on 8123)
   clickhouse-single:
-    image: clickhouse:latest
+    image: "clickhouse/clickhouse-server:25.8-alpine"
     ports:
       - 8123:8123
     environment:
@@ -16,7 +16,7 @@ services:
 
   # ClickHouse cluster with 1 shard 2 replicas (exposed on 8124 and 8125)
   clickhouse-01:
-    image: "clickhouse/clickhouse-server:latest"
+    image: "clickhouse/clickhouse-server:25.8-alpine"
     container_name: clickhouse-01
     hostname: clickhouse-01
     volumes:
@@ -31,7 +31,7 @@ services:
     depends_on:
       - clickhouse-keeper-01
   clickhouse-02:
-    image: "clickhouse/clickhouse-server:latest"
+    image: "clickhouse/clickhouse-server:25.8-alpine"
     container_name: clickhouse-02
     hostname: clickhouse-02
     volumes:
@@ -46,7 +46,7 @@ services:
     depends_on:
       - clickhouse-keeper-01
   clickhouse-keeper-01:
-    image: "clickhouse/clickhouse-keeper:latest-alpine"
+    image: "clickhouse/clickhouse-keeper:25.8-alpine"
     container_name: clickhouse-keeper-01
     hostname: clickhouse-keeper-01
     volumes:

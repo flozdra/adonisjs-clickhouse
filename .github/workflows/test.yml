@@ -32,7 +32,7 @@ jobs:
     services:
       # ClickHouse single server (exposed on 8123)
       clickhouse-single:
-        image: clickhouse/clickhouse-server:latest
+        image: clickhouse/clickhouse-server:25.8-alpine
         env:
           CLICKHOUSE_PORT: 8123
           CLICKHOUSE_USER: adonisjs
@@ -45,7 +45,7 @@ jobs:
 
       # ClickHouse cluster with 1 shard 2 replicas (exposed on 8124 and 8125)
       clickhouse-01:
-        image: clickhouse/clickhouse-server:latest
+        image: clickhouse/clickhouse-server:25.8-alpine
         env:
           CLICKHOUSE_PORT: 8123
           CLICKHOUSE_USER: adonisjs
@@ -56,7 +56,7 @@ jobs:
         options: --name clickhouse-01 --hostname clickhouse-01
 
       clickhouse-02:
-        image: clickhouse/clickhouse-server:latest
+        image: clickhouse/clickhouse-server:25.8-alpine
         env:
           CLICKHOUSE_PORT: 8123
           CLICKHOUSE_USER: adonisjs
@@ -68,7 +68,7 @@ jobs:
 
       # ClickHouse Keeper nodes
       clickhouse-keeper-01:
-        image: clickhouse/clickhouse-keeper:latest-alpine
+        image: clickhouse/clickhouse-keeper:25.8-alpine
         ports:
           - 9181:9181
         options: --name clickhouse-keeper-01 --hostname clickhouse-keeper-01
