@@ -103,4 +103,43 @@ test.group('Seeds Source', (group) => {
       ]
     )
   })
+
+  test('use natural sort for seeders files', async ({ fs, assert }) => {
+    const app = new AppFactory().create(fs.baseUrl, () => {})
+    await app.init()
+    const clickhouse = getClickHouse()
+
+    const config = Object.assign({}, clickhouse.getRawConnection('primary')!.config, {
+      seeders: {
+        paths: ['./clickhouse/seeders'],
+        naturalSort: true,
+      },
+    })
+
+    const seedersSource = new SeedersSource(config, app)
+    const seeder1 = await createSeederFile(fs, '', 'clickhouse/seeders/1')
+    const seeder2 = await createSeederFile(fs, '', 'clickhouse/seeders/2')
+    const seeder10 = await createSeederFile(fs, '', 'clickhouse/seeders/10')
+    const seeder3 = await createSeederFile(fs, '', 'clickhouse/seeders/3')
+    const seeder4 = await createSeederFile(fs, '', 'clickhouse/seeders/4')
+    const seeder100 = await createSeederFile(fs, '', 'clickhouse/seeders/100')
+
+    await clickhouse.manager.closeAll()
+
+    const files = await seedersSource.getSeeders()
+
+    assert.deepEqual(
+      files.map((file) => {
+        return { absPath: file.absPath, name: file.name }
+      }),
+      [
+        { absPath: join(fs.basePath, seeder1) + '.ts', name: seeder1 },
+        { absPath: join(fs.basePath, seeder2) + '.ts', name: seeder2 },
+        { absPath: join(fs.basePath, seeder3) + '.ts', name: seeder3 },
+        { absPath: join(fs.basePath, seeder4) + '.ts', name: seeder4 },
+        { absPath: join(fs.basePath, seeder10) + '.ts', name: seeder10 },
+        { absPath: join(fs.basePath, seeder100) + '.ts', name: seeder100 },
+      ]
+    )
+  })
 })

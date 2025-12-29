@@ -10,6 +10,11 @@ export type SeedersConfig = {
    * @default ['clickhouse/seeders']
    */
   paths: string[]
+
+  /**
+   * Use natural sort for seeder files
+   */
+  naturalSort?: boolean
 }
 
 /**
