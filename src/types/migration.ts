@@ -1,4 +1,4 @@
-import { FileNode } from './index.js'
+import type { FileNode } from './index.js'
 
 /**
  * Migrations config

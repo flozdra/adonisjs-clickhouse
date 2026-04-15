@@ -1,6 +1,6 @@
 import { BaseCheck, Result } from '@adonisjs/core/health'
 import type { HealthCheckResult } from '@adonisjs/core/types/health'
-import { MethodClientContract } from '../types/method.js'
+import type { MethodClientContract } from '../types/method.js'
 
 /**
  * The ClickHouseCheck attempts to establish the database connection by
@@ -52,7 +52,7 @@ export class ClickHouseCheck extends BaseCheck {
       return Result.ok('Successfully connected to the ClickHouse server').mergeMetaData(
         this.#getConnectionMetadata()
       )
-    } catch (error) {
+    } catch (error: any) {
       return Result.failed(error.message || 'Connection failed', error).mergeMetaData(
         this.#getConnectionMetadata()
       )

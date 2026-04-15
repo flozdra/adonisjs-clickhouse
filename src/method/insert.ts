@@ -1,7 +1,7 @@
-import { InsertContract, InsertEvent, InsertParams, InsertResult } from '../types/method.js'
+import type { InsertContract, InsertEvent, InsertParams, InsertResult } from '../types/method.js'
 import { MethodRunner } from './method_runner.js'
 import type { Emitter } from '@adonisjs/core/events'
-import { ConnectionContract } from '../types/connection.js'
+import type { ConnectionContract } from '../types/connection.js'
 
 export class Insert<T> implements InsertContract<T> {
   /**

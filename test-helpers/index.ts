@@ -2,11 +2,11 @@ import dotenv from 'dotenv'
 import { Logger } from '@adonisjs/core/logger'
 import { Emitter } from '@adonisjs/core/events'
 import { AppFactory } from '@adonisjs/core/factories/app'
-import { ClickHouseConfig, ConnectionConfig } from '../src/types/index.js'
+import type { ClickHouseConfig, ConnectionConfig } from '../src/types/index.js'
 import { getActiveTest } from '@japa/runner'
 import { createClient } from '@clickhouse/client'
 import { ClickHouse } from '../src/clickhouse/main.js'
-import { FileSystem } from '@japa/file-system'
+import type { FileSystem } from '@japa/file-system'
 
 dotenv.config()
 export const APP_ROOT = new URL('./tmp', import.meta.url)

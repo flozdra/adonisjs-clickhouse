@@ -1,6 +1,6 @@
-import { ClickHouseClient } from '@clickhouse/client'
-import EventEmitter from 'node:events'
-import { ConnectionConfig } from './index.js'
+import type { ClickHouseClient } from '@clickhouse/client'
+import type EventEmitter from 'node:events'
+import type { ConnectionConfig } from './index.js'
 
 /**
  * Connection represents a single ClickHouse JS client instance

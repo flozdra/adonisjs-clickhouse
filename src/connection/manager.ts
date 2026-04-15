@@ -1,13 +1,13 @@
 import type { Emitter } from '@adonisjs/core/events'
 import type { Logger } from '@adonisjs/core/logger'
 import { Connection } from './index.js'
-import {
+import type {
   ConnectionContract,
   ConnectionManagerContract,
   ConnectionNode,
 } from '../types/connection.js'
 import * as errors from '../errors.js'
-import { ConnectionConfig } from '../types/index.js'
+import type { ConnectionConfig } from '../types/index.js'
 
 /**
  * Connection manager job is to manage multiple named connections. You can add any number

@@ -1,8 +1,8 @@
 import type { Emitter } from '@adonisjs/core/events'
-import { ClickHouseClient } from '@clickhouse/client'
-import { ConnectionContract } from '../types/connection.js'
+import type { ClickHouseClient } from '@clickhouse/client'
+import type { ConnectionContract } from '../types/connection.js'
 import { Query } from './query.js'
-import {
+import type {
   CommandContract,
   CommandParams,
   DataFormat,

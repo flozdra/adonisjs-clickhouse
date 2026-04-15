@@ -1,5 +1,5 @@
 import type { Emitter } from '@adonisjs/core/events'
-import { EventName } from '../types/method.js'
+import type { EventName } from '../types/method.js'
 
 /**
  * Used for reporting methods using the profiler and the event

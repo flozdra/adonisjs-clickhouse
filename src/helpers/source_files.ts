@@ -1,8 +1,9 @@
 import slash from 'slash'
 import { join, extname } from 'node:path'
-import { fsReadAll, isScriptFile } from '@poppinss/utils'
+import { isScriptFile } from '@poppinss/utils'
+import { fsReadAll } from '@poppinss/utils/fs'
 import { fileURLToPath, pathToFileURL } from 'node:url'
-import { FileNode } from '../types/index.js'
+import type { FileNode } from '../types/index.js'
 
 /**
  * Sources files from a given directory

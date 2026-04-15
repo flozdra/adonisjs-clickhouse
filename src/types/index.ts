@@ -1,6 +1,6 @@
-import { NodeClickHouseClientConfigOptions } from '@clickhouse/client/dist/config.js'
-import { MigrationsConfig } from './migration.js'
-import { SeedersConfig } from './seeder.js'
+import type { NodeClickHouseClientConfigOptions } from '@clickhouse/client/dist/config.js'
+import type { MigrationsConfig } from './migration.js'
+import type { SeedersConfig } from './seeder.js'
 
 export type FileNode<T> = {
   absPath: string

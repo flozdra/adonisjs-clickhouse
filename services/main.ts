@@ -1,5 +1,5 @@
 import app from '@adonisjs/core/services/app'
-import { ClickHouse } from '../src/clickhouse/main.js'
+import type { ClickHouse } from '../src/clickhouse/main.js'
 
 let clickhouse: ClickHouse
 

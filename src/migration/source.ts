@@ -1,6 +1,6 @@
 import type { Application } from '@adonisjs/core/app'
 import { sourceFiles } from '../helpers/source_files.js'
-import { ConnectionConfig, FileNode } from '../types/index.js'
+import type { ConnectionConfig, FileNode } from '../types/index.js'
 
 /**
  * Migration source exposes the API to read the migration files

@@ -1,8 +1,8 @@
-import { ClickHouseClient, createClient } from '@clickhouse/client'
+import { type ClickHouseClient, createClient } from '@clickhouse/client'
 import { EventEmitter } from 'node:events'
-import { ConnectionContract } from '../types/connection.js'
+import type { ConnectionContract } from '../types/connection.js'
 import type { Logger } from '@adonisjs/core/logger'
-import { ConnectionConfig } from '../types/index.js'
+import type { ConnectionConfig } from '../types/index.js'
 
 /**
  * Connection class manages a given database connection. Internally it uses

@@ -1,7 +1,7 @@
 import { flags, BaseCommand } from '@adonisjs/core/ace'
-import { MigrationListNode } from '../../src/types/migration.js'
+import type { MigrationListNode } from '../../src/types/migration.js'
 import { MigrationRunner } from '../../src/migration/runner.js'
-import { CommandOptions } from '@adonisjs/core/types/ace'
+import type { CommandOptions } from '@adonisjs/core/types/ace'
 
 /**
  * The command is meant to see the status of ClickHouse migrations.

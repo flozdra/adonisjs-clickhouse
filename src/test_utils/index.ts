@@ -1,4 +1,4 @@
-import { ApplicationService } from '@adonisjs/core/types'
+import type { ApplicationService } from '@adonisjs/core/types'
 
 /**
  * ClickHouse test utils are meant to be used during testing to

@@ -1,5 +1,5 @@
-import { Application } from '@adonisjs/core/app'
-import { ConnectionConfig, FileNode } from '../types/index.js'
+import type { Application } from '@adonisjs/core/app'
+import type { ConnectionConfig, FileNode } from '../types/index.js'
 import { sourceFiles } from '../helpers/source_files.js'
 
 /**

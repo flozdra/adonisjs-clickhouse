@@ -3,10 +3,10 @@ import type { Emitter } from '@adonisjs/core/events'
 import type { Logger } from '@adonisjs/core/logger'
 import type { ClickHouseClient } from '@clickhouse/client-common'
 
-import { ConnectionManagerContract } from '../types/connection.js'
-import { ClickHouseConfig } from '../types/index.js'
+import type { ConnectionManagerContract } from '../types/connection.js'
+import type { ClickHouseConfig } from '../types/index.js'
 import { ConnectionManager } from '../connection/manager.js'
-import {
+import type {
   CommandContract,
   CommandParams,
   DataFormat,

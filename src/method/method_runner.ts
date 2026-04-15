@@ -1,4 +1,4 @@
-import { EventName } from '../types/method.js'
+import type { EventName } from '../types/method.js'
 import { MethodReporter } from './method_reporter.js'
 import type { Emitter } from '@adonisjs/core/events'
 
@@ -28,7 +28,7 @@ export class MethodRunner {
     try {
       const result = await callback()
       return [undefined, result]
-    } catch (error) {
+    } catch (error: any) {
       return [error, undefined]
     }
   }

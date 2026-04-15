@@ -1,5 +1,5 @@
-import { Exception } from '@poppinss/utils'
-import { MethodClientContract } from '../types/method.js'
+import { Exception } from '@poppinss/utils/exception'
+import type { MethodClientContract } from '../types/method.js'
 
 /**
  * Exposes the API to define table schema using deferred database

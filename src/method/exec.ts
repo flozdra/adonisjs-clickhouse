@@ -1,7 +1,7 @@
-import { ExecContract, ExecEvent, ExecParams, ExecResult } from '../types/method.js'
+import type { ExecContract, ExecEvent, ExecParams, ExecResult } from '../types/method.js'
 import { MethodRunner } from './method_runner.js'
 import type { Emitter } from '@adonisjs/core/events'
-import { ConnectionContract } from '../types/connection.js'
+import type { ConnectionContract } from '../types/connection.js'
 
 export class Exec implements ExecContract {
   /**

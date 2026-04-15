@@ -2,10 +2,10 @@ import slash from 'slash'
 import { extname } from 'node:path'
 import { BaseCommand, flags } from '@adonisjs/core/ace'
 
-import { SeederFileNode } from '../src/types/seeder.js'
+import type { SeederFileNode } from '../src/types/seeder.js'
 import type { SeedsRunner } from '../src/seeders/runner.js'
-import { CommandOptions } from '@adonisjs/core/types/ace'
-import { FileNode } from '../src/types/index.js'
+import type { CommandOptions } from '@adonisjs/core/types/ace'
+import type { FileNode } from '../src/types/index.js'
 
 export default class DbSeed extends BaseCommand {
   static commandName = 'clickhouse:db:seed'

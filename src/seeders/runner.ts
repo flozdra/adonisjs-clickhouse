@@ -1,9 +1,9 @@
-import { Application } from '@adonisjs/core/app'
+import type { Application } from '@adonisjs/core/app'
 import { SeedersSource } from './source.js'
-import { MethodClientContract } from '../types/method.js'
-import { ConnectionConfig, FileNode } from '../types/index.js'
-import { ClickHouse } from '../clickhouse/main.js'
-import { SeederConstructorContract, SeederFileNode } from '../types/seeder.js'
+import type { MethodClientContract } from '../types/method.js'
+import type { ConnectionConfig, FileNode } from '../types/index.js'
+import type { ClickHouse } from '../clickhouse/main.js'
+import type { SeederConstructorContract, SeederFileNode } from '../types/seeder.js'
 
 /**
  * Seeds Runner exposes the API to traverse seeders and execute them

@@ -1,4 +1,4 @@
-import { createError } from '@poppinss/utils'
+import { createError } from '@poppinss/utils/exception'
 
 export const E_UNMANAGED_DB_CONNECTION = createError<[string]>(
   'Cannot connect to unregistered connection %s',

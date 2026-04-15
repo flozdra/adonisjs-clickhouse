@@ -1,7 +1,13 @@
-import { DataFormat, QueryContract, QueryEvent, QueryParams, QueryResult } from '../types/method.js'
+import type {
+  DataFormat,
+  QueryContract,
+  QueryEvent,
+  QueryParams,
+  QueryResult,
+} from '../types/method.js'
 import { MethodRunner } from './method_runner.js'
 import type { Emitter } from '@adonisjs/core/events'
-import { ConnectionContract } from '../types/connection.js'
+import type { ConnectionContract } from '../types/connection.js'
 
 export class Query<Format extends DataFormat> implements QueryContract<Format> {
   /**

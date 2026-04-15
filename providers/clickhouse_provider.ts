@@ -1,9 +1,15 @@
-import { ApplicationService } from '@adonisjs/core/types'
+import type { ApplicationService } from '@adonisjs/core/types'
 import { ClickHouse } from '../src/clickhouse/main.js'
 import { ClickHouseTestUtils } from '../src/test_utils/index.js'
 import type { ClickHouseConfig } from '../src/types/index.js'
-import { ConnectionContract } from '../src/types/connection.js'
-import { CommandEvent, ExecEvent, InsertEvent, PingEvent, QueryEvent } from '../src/types/method.js'
+import type { ConnectionContract } from '../src/types/connection.js'
+import type {
+  CommandEvent,
+  ExecEvent,
+  InsertEvent,
+  PingEvent,
+  QueryEvent,
+} from '../src/types/method.js'
 import {
   prettyPrintCommand,
   prettyPrintExec,

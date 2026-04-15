@@ -1,7 +1,7 @@
 import prettyHrTime from 'pretty-hrtime'
 import { BaseCommand } from '@adonisjs/core/ace'
 import type { MigrationRunner } from '../../src/migration/runner.js'
-import { MigratedFileNode } from '../../src/types/migration.js'
+import type { MigratedFileNode } from '../../src/types/migration.js'
 
 /**
  * Base class to execute migrations and print logs

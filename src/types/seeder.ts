@@ -1,5 +1,5 @@
-import { FileNode } from './index.js'
-import { MethodClientContract } from './method.js'
+import type { FileNode } from './index.js'
+import type { MethodClientContract } from './method.js'
 
 /**
  * Seeders config

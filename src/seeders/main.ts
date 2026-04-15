@@ -1,4 +1,4 @@
-import { MethodClientContract } from '../types/method.js'
+import type { MethodClientContract } from '../types/method.js'
 
 export class BaseSeeder {
   static environment: string[]

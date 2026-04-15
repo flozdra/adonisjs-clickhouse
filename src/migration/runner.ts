@@ -1,17 +1,17 @@
 import { EventEmitter } from 'node:events'
-import {
+import type {
   MigratorOptions,
   MigratedFileNode,
   MigrationListNode,
   MigrationsConfig,
 } from '../types/migration.js'
 import { MigrationSource } from './source.js'
-import { Application } from '@adonisjs/core/app'
+import type { Application } from '@adonisjs/core/app'
 import * as errors from '../errors.js'
-import { MethodClientContract } from '../types/method.js'
-import { ConnectionConfig, FileNode } from '../types/index.js'
-import { ClickHouse } from '../clickhouse/main.js'
-import { BaseSchema } from '../schema/main.js'
+import type { MethodClientContract } from '../types/method.js'
+import type { ConnectionConfig, FileNode } from '../types/index.js'
+import type { ClickHouse } from '../clickhouse/main.js'
+import type { BaseSchema } from '../schema/main.js'
 
 /**
  * Migrator exposes the API to execute migrations using the schema files
@@ -184,7 +184,7 @@ export class MigrationRunner extends EventEmitter {
 
       this.migratedFiles[migration.name].status = 'completed'
       this.emit('migration:completed', this.migratedFiles[migration.name])
-    } catch (error) {
+    } catch (error: any) {
       this.error = error
       this.migratedFiles[migration.name].status = 'error'
       this.emit('migration:error', this.migratedFiles[migration.name])
@@ -538,7 +538,7 @@ export class MigrationRunner extends EventEmitter {
       } else if (this.options.direction === 'down') {
         await this.runDown(this.options.batch, this.options.step)
       }
-    } catch (error) {
+    } catch (error: any) {
       this.error = error
     }
 
