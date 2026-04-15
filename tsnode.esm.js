@@ -14,4 +14,4 @@
 | Because, loaders have been deprecated.
 */
 
-import 'ts-node-maintained/register/esm'
+import '@poppinss/ts-exec'

@@ -71,7 +71,7 @@
     "@japa/assert": "^4.2.0",
     "@japa/file-system": "^3.0.0",
     "@japa/runner": "^5.3.0",
-    "@swc/core": "^1.15.26",
+    "@poppinss/ts-exec": "^1.4.4",
     "@types/node": "^24.1.0",
     "@types/pretty-hrtime": "^1.0.3",
     "c8": "^11.0.0",
@@ -81,7 +81,6 @@
     "eslint": "^10.2.0",
     "np": "^11.0.3",
     "prettier": "^3.8.3",
-    "ts-node-maintained": "^10.9.6",
     "typescript": "^6.0.2"
   },
   "dependencies": {
