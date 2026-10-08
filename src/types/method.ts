@@ -1,6 +1,5 @@
 import type * as CHType from '@clickhouse/client'
-import type * as CHCommonType from '@clickhouse/client-common'
-import type { ClickHouseClient } from '@clickhouse/client-common'
+import type { ClickHouseClient } from '@clickhouse/client'
 
 import type { Emitter } from '@adonisjs/core/events'
 import type { ConnectionContract } from './connection.js'
@@ -8,19 +7,19 @@ import type { Readable } from 'node:stream'
 
 export type DataFormat = CHType.DataFormat
 
-export type QueryParams<Format extends DataFormat> = CHCommonType.QueryParamsWithFormat<Format>
+export type QueryParams<Format extends DataFormat> = CHType.QueryParamsWithFormat<Format>
 export type QueryResult<Format extends DataFormat> = CHType.ResultSet<Format>
 
-export type InsertParams<T> = CHCommonType.InsertParams<Readable, T>
-export type InsertResult = CHCommonType.InsertResult
+export type InsertParams<T> = CHType.InsertParams<Readable, T>
+export type InsertResult = CHType.InsertResult
 
-export type CommandParams = CHCommonType.CommandParams
-export type CommandResult = CHCommonType.CommandResult
+export type CommandParams = CHType.CommandParams
+export type CommandResult = CHType.CommandResult
 
-export type ExecParams = CHCommonType.ExecParams
-export type ExecResult = CHCommonType.ExecResult<Readable>
+export type ExecParams = CHType.ExecParams
+export type ExecResult = CHType.ExecResult<Readable>
 
-export type PingResult = CHCommonType.PingResult
+export type PingResult = CHType.PingResult
 
 export interface MethodClientContract {
   connection: ConnectionContract

@@ -1,7 +1,7 @@
 import Macroable from '@poppinss/macroable'
 import type { Emitter } from '@adonisjs/core/events'
 import type { Logger } from '@adonisjs/core/logger'
-import type { ClickHouseClient } from '@clickhouse/client-common'
+import type { ClickHouseClient } from '@clickhouse/client'
 
 import type { ConnectionManagerContract } from '../types/connection.js'
 import type { ClickHouseConfig } from '../types/index.js'
