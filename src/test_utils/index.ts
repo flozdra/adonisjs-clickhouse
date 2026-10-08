@@ -1,4 +1,5 @@
 import type { ApplicationService } from '@adonisjs/core/types'
+import type { ConnectionName } from '../types/index.js'
 
 /**
  * ClickHouse test utils are meant to be used during testing to
@@ -7,7 +8,7 @@ import type { ApplicationService } from '@adonisjs/core/types'
 export class ClickHouseTestUtils {
   constructor(
     protected app: ApplicationService,
-    protected connectionName?: string
+    protected connectionName?: ConnectionName
   ) {}
 
   /**

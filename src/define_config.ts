@@ -1,5 +1,7 @@
-import type { ClickHouseConfig } from './types/index.js'
+import type { ClickHouseConfig, ConnectionsList } from './types/index.js'
 
-export function defineConfig(config: ClickHouseConfig): ClickHouseConfig {
+export function defineConfig<Connections extends ConnectionsList>(
+  config: ClickHouseConfig<Connections>
+): ClickHouseConfig<Connections> {
   return config
 }

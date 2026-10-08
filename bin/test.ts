@@ -1,4 +1,5 @@
 import { assert } from '@japa/assert'
+import { expectTypeOf } from '@japa/expect-type'
 import { fileSystem } from '@japa/file-system'
 import { configure, processCLIArgs, run } from '@japa/runner'
 
@@ -8,6 +9,7 @@ configure({
   files: ['tests/**/*.spec.ts'],
   plugins: [
     assert(),
+    expectTypeOf(),
     fileSystem({ basePath: new URL('../test-helpers/fs-plugin/', import.meta.url) }),
   ],
 })

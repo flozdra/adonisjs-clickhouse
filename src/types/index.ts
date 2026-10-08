@@ -46,8 +46,41 @@ export type ConnectionConfig = NodeClickHouseClientConfigOptions & {
 
 export type ConnectionsList = Record<string, ConnectionConfig>
 
-export interface ClickHouseConfig {
-  connection: keyof ConnectionsList
+export interface ClickHouseConfig<Connections extends ConnectionsList = ConnectionsList> {
+  /**
+   * Default connection
+   */
+  connection: keyof Connections & string
   prettyPrintDebugQueries?: boolean
-  connections: ConnectionsList
+  connections: Connections
 }
+
+/**
+ * Infer the connections from the user config
+ */
+export type InferConnections<T extends { connections: ConnectionsList }> = T['connections']
+
+/**
+ * A list of known connections. Using declaration merging, the application
+ * can augment this interface to get type-safe connection names.
+ *
+ * ```ts
+ * declare module 'adonisjs-clickhouse/types' {
+ *   interface ClickHouseConnections extends InferConnections<typeof clickhouseConfig> {}
+ * }
+ * ```
+ */
+export interface ClickHouseConnections {}
+
+/**
+ * Names of the given connections. Falls back to `string` when
+ * no connections are known.
+ */
+export type ConnectionNameOf<Connections> = keyof Connections extends never
+  ? string
+  : keyof Connections & string
+
+/**
+ * Name of a connection, based on the `ClickHouseConnections` interface
+ */
+export type ConnectionName = ConnectionNameOf<ClickHouseConnections>

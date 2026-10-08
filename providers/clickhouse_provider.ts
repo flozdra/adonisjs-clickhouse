@@ -1,7 +1,7 @@
 import type { ApplicationService } from '@adonisjs/core/types'
 import { ClickHouse } from '../src/clickhouse/main.js'
 import { ClickHouseTestUtils } from '../src/test_utils/index.js'
-import type { ClickHouseConfig } from '../src/types/index.js'
+import type { ClickHouseConfig, ConnectionName } from '../src/types/index.js'
 import type { ConnectionContract } from '../src/types/connection.js'
 import type {
   CommandEvent,
@@ -39,7 +39,7 @@ declare module '@adonisjs/core/types' {
 
 declare module '@adonisjs/core/test_utils' {
   export interface TestUtils {
-    clickhouse(connectionName?: string): ClickHouseTestUtils
+    clickhouse(connectionName?: ConnectionName): ClickHouseTestUtils
   }
 }
 
@@ -56,7 +56,7 @@ export default class ClickHouseProvider {
     this.app.container.resolving('testUtils', async () => {
       const { TestUtils } = await import('@adonisjs/core/test_utils')
 
-      TestUtils.macro('clickhouse', (connectionName?: string) => {
+      TestUtils.macro('clickhouse', (connectionName?: ConnectionName) => {
         return new ClickHouseTestUtils(this.app, connectionName)
       })
     })
