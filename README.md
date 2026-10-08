@@ -34,6 +34,7 @@ You can also define multiple connections in the `connections` object.
 ```typescript
 import env from '#start/env'
 import { defineConfig } from 'adonisjs-clickhouse'
+import type { InferConnections } from 'adonisjs-clickhouse/types'
 
 const clickhouseConfig = defineConfig({
   connection: 'primary',
@@ -90,7 +91,17 @@ const clickhouseConfig = defineConfig({
 })
 
 export default clickhouseConfig
+
+/**
+ * Inferring types for the list of connections you have configured
+ * in your application.
+ */
+declare module 'adonisjs-clickhouse/types' {
+  interface ClickHouseConnections extends InferConnections<typeof clickhouseConfig> {}
+}
 ```
+
+The `declare module` block makes connection names type-safe: `clickhouse.connection()` and `testUtils.clickhouse()` only accept the connections defined in your config. Without it, any string is accepted.
 
 For more information about the ClickHouse JS client configuration, please refer to the [official documentation](https://clickhouse.com/docs/en/integrations/language-clients/javascript#configuration).
 
@@ -443,6 +454,12 @@ import testUtils from '@adonisjs/core/services/test_utils'
 test.group('Events', (group) => {
   group.each.setup(() => testUtils.clickhouse().truncate())
 })
+```
+
+By default, the macro uses the default connection. You can pass a connection name to target another one:
+
+```typescript
+testUtils.clickhouse('secondary').migrate()
 ```
 
 ## License

@@ -4,7 +4,7 @@ import type { Logger } from '@adonisjs/core/logger'
 import type { ClickHouseClient } from '@clickhouse/client'
 
 import type { ConnectionManagerContract } from '../types/connection.js'
-import type { ClickHouseConfig } from '../types/index.js'
+import type { ClickHouseConfig, ConnectionName } from '../types/index.js'
 import { ConnectionManager } from '../connection/manager.js'
 import type {
   CommandContract,
@@ -68,7 +68,7 @@ export class ClickHouse extends Macroable {
   /**
    * Returns the query builder for a given connection
    */
-  connection(connection: string = this.primaryConnectionName): MethodClientContract {
+  connection(connection: ConnectionName = this.primaryConnectionName): MethodClientContract {
     /**
      * Connect is noop when already connected
      */
