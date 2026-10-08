@@ -1,5 +1,9 @@
 import { test } from '@japa/runner'
-import { IgnitorFactory } from '@adonisjs/core/factories'
+import { ListLoader } from '@adonisjs/core/ace'
+import { AceFactory, IgnitorFactory } from '@adonisjs/core/factories'
+
+import Reset from '../commands/migration/reset.js'
+import Migrate from '../commands/migration/run.js'
 
 import { defineConfig } from '../src/define_config.js'
 import { ClickHouse } from '../src/clickhouse/main.js'
@@ -104,5 +108,54 @@ test.group('ClickHouse Provider', () => {
 
     assert.isDefined(testUtils.clickhouse)
     assert.isFunction(testUtils.clickhouse)
+  })
+
+  test('testUtils.clickhouse() forwards the connection name', async ({ assert }) => {
+    assert.plan(2)
+
+    class FakeMigrate extends Migrate {
+      override async run() {
+        assert.equal(this.connection, 'secondary')
+      }
+    }
+
+    class FakeReset extends Reset {
+      override async run() {
+        assert.equal(this.connection, 'secondary')
+      }
+    }
+
+    const ignitor = new IgnitorFactory()
+      .merge({
+        rcFileContents: {
+          providers: [() => import('../providers/clickhouse_provider.js')],
+        },
+      })
+      .withCoreConfig()
+      .withCoreProviders()
+      .merge({
+        config: {
+          clickhouse: defineConfig({
+            connection: 'primary',
+            connections: {
+              primary: getConnectionConfig(),
+              secondary: getConnectionConfig(),
+            },
+          }),
+        },
+      })
+      .create(BASE_URL, { importer: IMPORTER })
+
+    const app = ignitor.createApp('web')
+    await app.init()
+    await app.boot()
+
+    const ace = await new AceFactory().make(BASE_URL, { importer: () => {} })
+    ace.addLoader(new ListLoader([FakeMigrate, FakeReset]))
+    app.container.bind('ace', () => ace)
+
+    const testUtils = await app.container.make('testUtils')
+    const rollback = await testUtils.clickhouse('secondary').migrate()
+    await rollback()
   })
 })

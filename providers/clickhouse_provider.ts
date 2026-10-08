@@ -56,8 +56,8 @@ export default class ClickHouseProvider {
     this.app.container.resolving('testUtils', async () => {
       const { TestUtils } = await import('@adonisjs/core/test_utils')
 
-      TestUtils.macro('clickhouse', () => {
-        return new ClickHouseTestUtils(this.app)
+      TestUtils.macro('clickhouse', (connectionName?: string) => {
+        return new ClickHouseTestUtils(this.app, connectionName)
       })
     })
   }
